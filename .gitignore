@@ -19,8 +19,8 @@ artifact/
 /artifact/**/*.ts
 /artifact/**/*.map
 lib/
-/**/src/**/*.js
-/**/src/**/*.map
+/src/**/*.js
+/src/**/*.map
 *.class
 *.war
 *.swf
