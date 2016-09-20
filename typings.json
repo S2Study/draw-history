@@ -1,0 +1,9 @@
+{
+  "name": "draw-history",
+  "version": false,
+  "dependencies": {},
+  "globalDependencies": {
+    "draw-structure-api": "npm:@s2study/draw-api/dts/draw-structure-api.d.ts",
+    "draw-history": "npm:@s2study/draw-api/dts/draw-history.d.ts"
+  }
+}
