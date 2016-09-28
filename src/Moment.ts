@@ -1,35 +1,36 @@
-import DrawMoment = drawchat.core.DrawMoment;
-import DrawLayerMoment = drawchat.core.DrawLayerMoment;
+import APIS from "@s2study/draw-api";
 
-export class Moment implements DrawMoment{
+import DrawMoment = APIS.history.DrawMoment;
+import DrawLayerMoment = APIS.history.DrawLayerMoment;
 
-	private historyNumber:number;
-	private sequences:string[];
-	private layerMoments:{[key:string]:DrawLayerMoment};
+export class Moment implements DrawMoment {
+
+	private historyNumber: number;
+	private sequences: string[];
+	private layerMoments: {[key: string]: DrawLayerMoment};
 
 	constructor(
-		historyNumber:number,
-		layerMoments?:{[key:string]:DrawLayerMoment},
-		sequences?:string[]
-	){
+		historyNumber: number,
+		layerMoments?: {[key: string]: DrawLayerMoment},
+		sequences?: string[]) {
 		this.historyNumber = historyNumber;
 		this.layerMoments = layerMoments;
 		this.sequences = sequences;
 	}
 
-	getHistoryNumber():number {
+	getHistoryNumber(): number {
 		return this.historyNumber;
 	}
 
-	getKeys():string[] {
+	getKeys(): string[] {
 		return this.layerMoments ? Object.keys(this.layerMoments) : [];
 	}
 
-	getLayerMoment(key:string):drawchat.core.DrawLayerMoment {
+	getLayerMoment(key: string): DrawLayerMoment {
 		return this.layerMoments ? this.layerMoments[key] : null;
 	}
 
-	getSequence():string[] {
+	getSequence(): string[] {
 		return this.sequences;
 	}
 }

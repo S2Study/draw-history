@@ -1,18 +1,20 @@
-import NumberGenerator = drawchat.core.NumberGenerator;
-export class HistoryNumberGenerator implements NumberGenerator{
+import APIS from "@s2study/draw-api";
 
-	private num:number;
+import NumberGenerator = APIS.history.NumberGenerator;
+export class HistoryNumberGenerator implements NumberGenerator {
 
-	constructor(){
-		this.num = 0|0;
+	private num: number;
+
+	constructor() {
+		this.num = 0 | 0;
 	}
 
 	/**
 	 * 採番処理を行います。
 	 * @returns {number}
 	 */
-	generateNumber():number{
-		this.num = (this.num + 1)|0;
+	generateNumber(): number {
+		this.num = (this.num + 1) | 0;
 		return this.num;
 	}
 }

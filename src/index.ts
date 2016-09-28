@@ -1,13 +1,14 @@
-import NumberGenerator = drawchat.core.NumberGenerator;
-import KeyGenerator = drawchat.core.KeyGenerator;
+import APIS from "@s2study/draw-api";
+
+import NumberGenerator = APIS.history.NumberGenerator;
+import KeyGenerator = APIS.history.KeyGenerator;
 import {History} from "./History";
-export class DrawHistory{
+export class DrawHistory {
 	createInstance(
-		numberGenerator?:NumberGenerator,
-		layerNumberGenerator?:KeyGenerator
-	):History{
-		return new History(numberGenerator,layerNumberGenerator);
+		numberGenerator?: NumberGenerator,
+		layerNumberGenerator?: KeyGenerator): History {
+		return new History(numberGenerator, layerNumberGenerator);
 	}
 }
-var Instance = new DrawHistory();
+const Instance = new DrawHistory();
 export default Instance;

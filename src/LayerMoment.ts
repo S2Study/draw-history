@@ -1,29 +1,34 @@
-import DrawLayerMoment = drawchat.core.DrawLayerMoment;
-import Layer = drawchat.Layer;
-export class LayerMoment implements DrawLayerMoment{
+import APIS from "@s2study/draw-api";
 
-	private _canvasId:string;
+import DrawLayerMoment = APIS.history.DrawLayerMoment;
+import Layer = APIS.structures.Layer;
+import Transform = APIS.structures.Transform;
+import Clip = APIS.structures.Clip;
+import Draw = APIS.structures.Draw;
+export class LayerMoment implements DrawLayerMoment {
 
-	private _layer:Layer;
+	private _canvasId: string;
 
-	constructor(canvasId:string,layer:Layer){
+	private _layer: Layer;
+
+	constructor(canvasId: string, layer: Layer) {
 		this._canvasId = canvasId;
 		this._layer = layer;
 	}
 
-	getCanvasId():string {
+	getCanvasId(): string {
 		return this._canvasId;
 	}
 
-	getTransform():drawchat.Transform {
+	getTransform(): Transform {
 		return this._layer ? this._layer.transform : null;
 	}
 
-	getClip():drawchat.Clip {
+	getClip(): Clip {
 		return this._layer ? this._layer.clip : null;
 	}
 
-	getDraws():drawchat.Draw[] {
+	getDraws(): Draw[] {
 		return this._layer ? this._layer.draws : null;
 	}
 }

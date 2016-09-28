@@ -1,22 +1,22 @@
-import DrawMoment = drawchat.core.DrawMoment;
-import Message = drawchat.Message;
-import Layer = drawchat.Layer;
-import DrawLayerMoment = drawchat.core.DrawLayerMoment;
+import APIS from "@s2study/draw-api";
+import DrawMoment = APIS.history.DrawMoment;
+import Message = APIS.structures.Message;
+import Layer = APIS.structures.Layer;
+import DrawLayerMoment = APIS.history.DrawLayerMoment;
 
 export class DrawMessageBuilder {
 
 	static createDrawMessage(
-		historyNumbers:number[],
-		map:Map<number,DrawMoment>,
-		localLayers:{[key:string]:string}
-	):Message{
+		historyNumbers: number[],
+		map: Map<number, DrawMoment>,
+		localLayers: {[key: string]: string}): Message {
 
-		let resultTo:{[key:string]:Layer} = {};
-		let sequences:string[];
+		let resultTo: {[key: string]: Layer} = {};
+		let sequences: string[];
 
-		for(let historyNumber of historyNumbers){
+		for (let historyNumber of historyNumbers) {
 			let moment = map.get(historyNumber);
-			if(moment.getSequence()){
+			if (moment.getSequence()) {
 				sequences = moment.getSequence();
 			}
 			DrawMessageBuilder.parseMoment(
@@ -26,31 +26,30 @@ export class DrawMessageBuilder {
 			);
 		}
 		sequences = DrawMessageBuilder.removeLocalLayer(
-			sequences,localLayers
+			sequences, localLayers
 		);
 
-		let layers:Layer[] = [];
-		for(let sequence of sequences){
+		let layers: Layer[] = [];
+		for (let sequence of sequences) {
 			layers.push(resultTo[sequence]);
 		}
 
 		return {
-			time:new Date().getTime(),
-			canvas:layers
-		}
+			time: new Date().getTime(),
+			canvas: layers
+		};
 	}
 
 	static removeLocalLayer(
-		layers:string[],
-		localLayers:{[key:string]:string}
-	):string[]{
-		if(localLayers == null){
+		layers: string[],
+		localLayers: {[key: string]: string}): string[] {
+		if (localLayers == null) {
 			return layers;
 		}
-		let result:string[] = [];
+		let result: string[] = [];
 		let i = 0 | 0;
-		while( i < layers.length){
-			if(localLayers[layers[i]] != null){
+		while (i < layers.length) {
+			if (localLayers[layers[i]] != null) {
 				result.push(layers[i]);
 			}
 			i = ( i + 1) | 0;
@@ -65,39 +64,38 @@ export class DrawMessageBuilder {
 	 * @param localLayers
 	 */
 	static parseMoment(
-		resultTo:{[key:string]:Layer},
-		moment:DrawMoment,
-		localLayers:{[key:string]:string}
-	):void{
+		resultTo: {[key: string]: Layer},
+		moment: DrawMoment,
+		localLayers: {[key: string]: string}): void {
 
 		let keys = moment.getKeys();
-		let key:string;
+		let key: string;
 		let i = 0 | 0;
-		let layerMoment:DrawLayerMoment;
-		let layer:Layer;
+		let layerMoment: DrawLayerMoment;
+		let layer: Layer;
 
-		while( i < keys.length){
+		while (i < keys.length) {
 			key = keys[i];
-			i = (i + 1)|0;
-			if(localLayers != null && localLayers[key] != null){
+			i = (i + 1) | 0;
+			if (localLayers != null && localLayers[key] != null) {
 				continue;
 			}
 			layerMoment = moment.getLayerMoment(keys[i]);
 			layer = resultTo[layerMoment.getCanvasId()];
-			if(!layer){
-				layer = {draws:[]};
+			if (!layer) {
+				layer = {draws: []};
 			}
-			if(layerMoment.getClip()){
+			if (layerMoment.getClip()) {
 				layer.clip = layerMoment.getClip();
 			}
-			if(layerMoment.getTransform()){
+			if (layerMoment.getTransform()) {
 				layer.transform = layerMoment.getTransform();
 			}
-			if(!layerMoment.getDraws()){
+			if (!layerMoment.getDraws()) {
 				continue;
 			}
 			let draws = layerMoment.getDraws();
-			for(let draw of draws){
+			for (let draw of draws) {
 				layer.draws.push(draw);
 			}
 		}

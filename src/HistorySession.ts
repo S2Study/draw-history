@@ -1,7 +1,11 @@
-import DrawHistory = drawchat.core.DrawHistory;
-import DrawMoment = drawchat.core.DrawMoment;
-import DrawLayerMoment = drawchat.core.DrawLayerMoment;
-import DrawHistoryEditSession = drawchat.core.DrawHistoryEditSession;
+import APIS from "@s2study/draw-api";
+
+import DrawHistory = APIS.history.DrawHistory;
+import DrawMoment = APIS.history.DrawMoment;
+import DrawLayerMoment = APIS.history.DrawLayerMoment;
+import DrawHistoryEditSession = APIS.history.DrawHistoryEditSession;
+import Layer = APIS.structures.Layer;
+import DrawMomentBuilder = APIS.history.DrawMomentBuilder;
 
 import {Moment} from "./Moment";
 import {MomentBuilder} from "./MomentBuilder";
@@ -9,45 +13,42 @@ import {HistoryNumberUtil} from "./HistoryNumberUtil";
 import {HistoryProperty} from "./HistoryProperty";
 import {SessionQueue} from "./SessionQueue";
 
-export class HistorySession implements DrawHistoryEditSession{
+export class HistorySession implements DrawHistoryEditSession {
 
-	alive:boolean = false;
+	alive: boolean = false;
 
-	private prop:HistoryProperty;
-	private queue:SessionQueue;
+	private prop: HistoryProperty;
+	private queue: SessionQueue;
 
 	constructor(
-		queue:SessionQueue,
-		historyProperty:HistoryProperty
-	){
+		queue: SessionQueue,
+		historyProperty: HistoryProperty) {
 		this.prop = historyProperty;
 		this.queue = queue;
 	}
 
-	setHistoryNumberNow(
-		historyNumber:number,
-		clearFuture:boolean = false
-	):number {
-		if(!this.alive){
+	setHistoryNumberNow(historyNumber: number,
+						clearFuture: boolean = false): number {
+		if (!this.alive) {
 			this.noticeSessionError();
 			return;
 		}
 		let index = HistoryNumberUtil.getHistoryIndex(
-			this.prop.historyNumbers,historyNumber
+			this.prop.historyNumbers, historyNumber
 		);
-		if(index < 0){
+		if (index < 0) {
 			return index;
 		}
 		this.prop.historyNumberNow = this.prop.historyNumbers[index];
-		if(clearFuture){
+		if (clearFuture) {
 			this.cleanupHistory();
 		}
 		this.noticeUpdate();
 		return this.prop.historyNumberNow;
 	}
 
-	clear():void {
-		if(!this.alive){
+	clear(): void {
+		if (!this.alive) {
 			this.noticeSessionError();
 			return;
 		}
@@ -58,14 +59,13 @@ export class HistorySession implements DrawHistoryEditSession{
 	}
 
 	addLayer(
-		layer:drawchat.Layer,
-		isLocal?:boolean
-	):drawchat.core.DrawMoment {
-		if(!this.alive){
+		layer: Layer,
+		isLocal?: boolean): DrawMoment {
+		if (!this.alive) {
 			this.noticeSessionError();
 			return;
 		}
-	    let builder = this.addMoment();
+		let builder = this.addMoment();
 		let layers = this.prop.getLayers(this.prop.historyNumberNow);
 		let layerId = this.prop.layerNumberGenerator.generateKey();
 		layers.push(layerId);
@@ -87,17 +87,15 @@ export class HistorySession implements DrawHistoryEditSession{
 		return builder.commit();
 	}
 
-	removeLayer(
-		layerId:string
-	):void {
-		if(!this.alive){
+	removeLayer(layerId: string): void {
+		if (!this.alive) {
 			this.noticeSessionError();
 			return;
 		}
 		let layers = this.prop.getLayers(this.prop.historyNumberNow);
-		let result:string[] = [];
-		for(let id of layers){
-			if(layerId === id){
+		let result: string[] = [];
+		for (let id of layers) {
+			if (layerId === id) {
 				continue;
 			}
 			result.push(id);
@@ -105,8 +103,8 @@ export class HistorySession implements DrawHistoryEditSession{
 		this.addMoment().setSequence(result).commit();
 	}
 
-	addMoment():drawchat.core.DrawMomentBuilder {
-		if(!this.alive){
+	addMoment(): DrawMomentBuilder {
+		if (!this.alive) {
 			this.noticeSessionError();
 			return;
 		}
@@ -119,16 +117,14 @@ export class HistorySession implements DrawHistoryEditSession{
 	 * @param sequences
 	 * @returns {Moment}
 	 */
-	pushHistory(
-		layerMoments?:{[key:string]:DrawLayerMoment},
-		sequences?:string[]
-	):Moment{
+	pushHistory(layerMoments?: {[key: string]: DrawLayerMoment},
+				sequences?: string[]): Moment {
 		this.cleanupHistory();
 		let num = this.prop.numberGenerator.generateNumber();
-		let moment = new Moment(num,layerMoments,sequences);
-		this.prop.map.set(num,moment);
+		let moment = new Moment(num, layerMoments, sequences);
+		this.prop.map.set(num, moment);
 		this.prop.historyNumbers.push(num);
-		if(moment.getSequence() != null){
+		if (moment.getSequence() != null) {
 			this.prop.sequencesHistoryNumbers.push(num);
 		}
 		this.prop.historyNumberNow = num;
@@ -142,21 +138,21 @@ export class HistorySession implements DrawHistoryEditSession{
 
 	/**
 	 * 編集セッション切れ通知
- 	 */
-	private noticeSessionError():void{
-		//とりあえずエラーメッセージのみ
-		console.log('This session is not alive.');
+	 */
+	private noticeSessionError(): void {
+		// とりあえずエラーメッセージのみ
+		console.log("This session is not alive.");
 	}
 
 	/**
 	 * リスナーに更新を通知する。
 	 */
-	private noticeUpdate():void{
+	private noticeUpdate(): void {
 		let list = this.prop.listeners;
 		let len = (this.prop.listeners.length) | 0;
 		let i = 0;
 		this.prop.listeners = [];
-		while(i < len){
+		while (i < len) {
 			list[i](this.prop.historyNumberNow);
 			i = (i + 1) | 0;
 		}
@@ -165,39 +161,39 @@ export class HistorySession implements DrawHistoryEditSession{
 	/**
 	 * 現在の履歴番号よりも後の履歴を削除する。
 	 */
-	private cleanupHistory(){
+	private cleanupHistory() {
 		let index = HistoryNumberUtil.getHistoryIndex(
-			this.prop.historyNumbers,this.prop.historyNumberNow
+			this.prop.historyNumbers, this.prop.historyNumberNow
 		);
-		if(index >= this.prop.historyNumbers.length){
+		if (index >= this.prop.historyNumbers.length) {
 			return;
 		}
 
 		// 全編集履歴の更新
 		let deleted = this.prop.historyNumbers.slice(
-			index + 1,this.prop.historyNumbers.length
+			index + 1, this.prop.historyNumbers.length
 		);
 
 		let i = 0 | 0;
-		while(i < deleted.length){
+		while (i < deleted.length) {
 			this.prop.map.delete(deleted[i]);
 			i = (i + 1) | 0;
 		}
-		this.prop.historyNumbers = this.prop.historyNumbers.slice(0,index + 1);
+		this.prop.historyNumbers = this.prop.historyNumbers.slice(0, index + 1);
 
 		// sequencesの更新
 		index = HistoryNumberUtil.getHistoryIndex(
-			this.prop.sequencesHistoryNumbers,this.prop.historyNumberNow
+			this.prop.sequencesHistoryNumbers, this.prop.historyNumberNow
 		);
-		if(index >= this.prop.sequencesHistoryNumbers.length){
+		if (index >= this.prop.sequencesHistoryNumbers.length) {
 			return;
 		}
 		this.prop.sequencesHistoryNumbers
-			= this.prop.sequencesHistoryNumbers.slice(0,index + 1);
+			= this.prop.sequencesHistoryNumbers.slice(0, index + 1);
 	}
 
-	release():void {
-		if(this.alive){
+	release(): void {
+		if (this.alive) {
 			this.queue.dequeue();
 		}
 	}
