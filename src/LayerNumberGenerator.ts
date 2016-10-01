@@ -1,4 +1,4 @@
-import APIS from "@s2study/draw-api";
+import * as APIS from "@s2study/draw-api";
 
 import KeyGenerator = APIS.history.KeyGenerator;
 export class LayerNumberGenerator implements KeyGenerator {

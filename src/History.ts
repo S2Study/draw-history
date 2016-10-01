@@ -1,4 +1,4 @@
-import APIS from "@s2study/draw-api";
+import * as APIS from "@s2study/draw-api";
 
 import DrawHistory = APIS.history.DrawHistory;
 import DrawMoment = APIS.history.DrawMoment;

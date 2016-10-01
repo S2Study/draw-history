@@ -1,4 +1,4 @@
-import APIS from "@s2study/draw-api";
+import * as APIS from "@s2study/draw-api";
 
 import DrawLyaerMomentBuilder = APIS.history.DrawLayerMomentBuilder;
 import DrawLayerMoment = APIS.history.DrawLayerMoment;

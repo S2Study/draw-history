@@ -1,4 +1,4 @@
-import APIS from "@s2study/draw-api";
+import * as APIS from "@s2study/draw-api";
 
 import NumberGenerator = APIS.history.NumberGenerator;
 import KeyGenerator = APIS.history.KeyGenerator;
