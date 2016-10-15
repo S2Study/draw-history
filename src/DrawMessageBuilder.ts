@@ -49,7 +49,7 @@ export class DrawMessageBuilder {
 		let result: string[] = [];
 		let i = 0 | 0;
 		while (i < layers.length) {
-			if (localLayers[layers[i]] != null) {
+			if (localLayers[layers[i]] == null) {
 				result.push(layers[i]);
 			}
 			i = ( i + 1) | 0;
@@ -80,10 +80,11 @@ export class DrawMessageBuilder {
 			if (localLayers != null && localLayers[key] != null) {
 				continue;
 			}
-			layerMoment = moment.getLayerMoment(keys[i]);
+			layerMoment = moment.getLayerMoment(key);
 			layer = resultTo[layerMoment.getCanvasId()];
 			if (!layer) {
 				layer = {draws: []};
+				resultTo[layerMoment.getCanvasId()] = layer;
 			}
 			if (layerMoment.getClip()) {
 				layer.clip = layerMoment.getClip();

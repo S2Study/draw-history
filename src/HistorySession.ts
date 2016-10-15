@@ -60,7 +60,8 @@ export class HistorySession implements DrawHistoryEditSession {
 
 	addLayer(
 		layer: Layer,
-		isLocal?: boolean): DrawMoment {
+		isLocal?: boolean
+	): DrawMoment {
 		if (!this.alive) {
 			this.noticeSessionError();
 			return;
@@ -83,7 +84,9 @@ export class HistorySession implements DrawHistoryEditSession {
 			layer.draws
 		);
 		layerBuilder.commit();
-		this.prop.localLayers[layerId] = layerId;
+		if (isLocal) {
+			this.prop.localLayers[layerId] = layerId;
+		}
 		return builder.commit();
 	}
 

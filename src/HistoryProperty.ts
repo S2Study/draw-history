@@ -86,7 +86,7 @@ export class HistoryProperty {
 		}
 		i = 0 | 0;
 		while (i < moments.length) {
-			if (this.localLayers[moments[i]] != null) {
+			if (this.localLayers[moments[i]] == null) {
 				result.push(moments[i]);
 			}
 			i = (i + 1) | 0;
