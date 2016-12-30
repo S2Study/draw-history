@@ -6,6 +6,7 @@ import DrawLayerMoment = APIS.history.DrawLayerMoment;
 
 export class DrawMessageBuilder {
 
+	//test
 	static createDrawMessage(
 		historyNumbers: number[],
 		map: Map<number, DrawMoment>,
