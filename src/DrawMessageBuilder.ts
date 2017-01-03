@@ -7,6 +7,7 @@ import {DrawAPIUtils} from "@s2study/draw-api/lib/DrawAPIUtils";
 
 export class DrawMessageBuilder {
 
+	//test
 	static createDrawMessage(
 		historyNumbers: number[],
 		map: Map<number, DrawMoment>,
