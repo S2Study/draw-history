@@ -8,10 +8,10 @@ import Draw = APIS.structures.Draw;
 export class LayerMoment implements DrawLayerMoment {
 
 	private _canvasId: string;
-
 	private _layer: Layer;
 
-	constructor(canvasId: string, layer: Layer) {
+	constructor(
+		canvasId: string, layer: Layer) {
 		this._canvasId = canvasId;
 		this._layer = layer;
 	}
@@ -20,15 +20,15 @@ export class LayerMoment implements DrawLayerMoment {
 		return this._canvasId;
 	}
 
-	getTransform(): Transform {
-		return this._layer ? this._layer.transform : null;
+	getTransform(): Transform | null {
+		return APIS.DrawUtils.complement(this._layer!.transform, null );
 	}
 
-	getClip(): Clip {
-		return this._layer ? this._layer.clip : null;
+	getClip(): Clip | null {
+		return APIS.DrawUtils.complement(this._layer!.clip, null );
 	}
 
-	getDraws(): Draw[] {
-		return this._layer ? this._layer.draws : null;
+	getDraws(): ( Draw | undefined) [] {
+		return APIS.DrawUtils.complement< ( Draw | undefined) []>(this._layer!.draws, [] );
 	}
 }

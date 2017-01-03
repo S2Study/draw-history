@@ -27,11 +27,10 @@ export class HistorySession implements DrawHistoryEditSession {
 		this.queue = queue;
 	}
 
-	setHistoryNumberNow(historyNumber: number,
-						clearFuture: boolean = false): number {
+	setHistoryNumberNow(historyNumber: number, clearFuture?: boolean| null): number {
 		if (!this.alive) {
 			this.noticeSessionError();
-			return;
+			return -1;
 		}
 		let index = HistoryNumberUtil.getHistoryIndex(
 			this.prop.historyNumbers, historyNumber
@@ -47,6 +46,28 @@ export class HistorySession implements DrawHistoryEditSession {
 		return this.prop.historyNumberNow;
 	}
 
+	// setHistoryNumberNow(
+	// 	historyNumber: number,
+	// 	clearFuture: boolean = false
+	// ): number {
+	// 	if (!this.alive) {
+	// 		this.noticeSessionError();
+	// 		return;
+	// 	}
+	// 	let index = HistoryNumberUtil.getHistoryIndex(
+	// 		this.prop.historyNumbers, historyNumber
+	// 	);
+	// 	if (index < 0) {
+	// 		return index;
+	// 	}
+	// 	this.prop.historyNumberNow = this.prop.historyNumbers[index];
+	// 	if (clearFuture) {
+	// 		this.cleanupHistory();
+	// 	}
+	// 	this.noticeUpdate();
+	// 	return this.prop.historyNumberNow;
+	// }
+
 	clear(): void {
 		if (!this.alive) {
 			this.noticeSessionError();
@@ -60,12 +81,14 @@ export class HistorySession implements DrawHistoryEditSession {
 
 	addLayer(
 		layer: Layer,
-		isLocal?: boolean
+		isLocal?: boolean | null
 	): DrawMoment {
+
 		if (!this.alive) {
 			this.noticeSessionError();
-			return;
+			throw new Error("This session is not alive.");
 		}
+
 		let builder = this.addMoment();
 		let layers = this.prop.getLayers(this.prop.historyNumberNow);
 		let layerId = this.prop.layerNumberGenerator.generateKey();
@@ -74,12 +97,16 @@ export class HistorySession implements DrawHistoryEditSession {
 		let layerBuilder = builder.putLayerMoment(
 			layerId
 		);
-		layerBuilder.setClip(
-			layer.clip
-		);
-		layerBuilder.setTransForm(
-			layer.transform
-		);
+		if (APIS.DrawUtils.isNull(layer.clip) === false) {
+			layerBuilder.setClip(
+				layer.clip!
+			);
+		}
+		if (APIS.DrawUtils.isNull(layer.transform) === false) {
+			layerBuilder.setTransForm(
+				layer.transform!
+			);
+		}
 		layerBuilder.addDraws(
 			layer.draws
 		);
@@ -91,14 +118,16 @@ export class HistorySession implements DrawHistoryEditSession {
 	}
 
 	removeLayer(layerId: string): void {
+
 		if (!this.alive) {
 			this.noticeSessionError();
 			return;
 		}
+
 		let layers = this.prop.getLayers(this.prop.historyNumberNow);
 		let result: string[] = [];
 		for (let id of layers) {
-			if (layerId === id) {
+			if (layerId === id || id === undefined) {
 				continue;
 			}
 			result.push(id);
@@ -109,7 +138,7 @@ export class HistorySession implements DrawHistoryEditSession {
 	addMoment(): DrawMomentBuilder {
 		if (!this.alive) {
 			this.noticeSessionError();
-			return;
+			throw new Error("This session is not alive.");
 		}
 		return new MomentBuilder(this);
 	}
@@ -127,7 +156,7 @@ export class HistorySession implements DrawHistoryEditSession {
 		let moment = new Moment(num, layerMoments, sequences);
 		this.prop.map.set(num, moment);
 		this.prop.historyNumbers.push(num);
-		if (moment.getSequence() != null) {
+		if (APIS.DrawUtils.isNull(moment.getSequence()) === false ) {
 			this.prop.sequencesHistoryNumbers.push(num);
 		}
 		this.prop.historyNumberNow = num;

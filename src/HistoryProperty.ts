@@ -58,7 +58,7 @@ export class HistoryProperty {
 
 	getLayers(
 		historyNumber?: number,
-		ignoreLocal: boolean = false): string[] {
+		ignoreLocal: boolean = false): ( string | undefined ) [] {
 
 		let historyNum = historyNumber;
 		if (historyNum !== 0 && (!historyNum || historyNum < 0 )) {
@@ -81,13 +81,16 @@ export class HistoryProperty {
 
 		let moments = moment.getSequence();
 		let result: string[] = [];
-		if (moments == null) {
+
+		if (APIS.DrawUtils.isNull(moments) === true) {
 			return result;
 		}
 		i = 0 | 0;
+
 		while (i < moments.length) {
-			if (this.localLayers[moments[i]] == null) {
-				result.push(moments[i]);
+			let key = moments[i];
+			if (APIS.DrawUtils.containsKey(key, this.localLayers) === false) {
+				result.push(key!);
 			}
 			i = (i + 1) | 0;
 		}

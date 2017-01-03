@@ -1,10 +1,12 @@
+import * as APIS from "@s2study/draw-api";
+
 import {HistorySession} from "./HistorySession";
 import {HistoryProperty} from "./HistoryProperty";
 
 export class SessionQueue {
 
-	private first: QueueItem;
-	private last: QueueItem;
+	private first: QueueItem | null;
+	private last: QueueItem | null;
 	private prop: HistoryProperty;
 
 	constructor(prop: HistoryProperty) {
@@ -17,22 +19,22 @@ export class SessionQueue {
 		let node: QueueItem = new QueueItem(
 			new HistorySession(this, this.prop),
 			success,
-			reject != null ? reject : success
+			APIS.DrawUtils.isNull(reject) === false ? reject! : success
 		);
-		if (this.first == null) {
+		if (this.first === null) {
 			this.first = this.last = node;
 			node.value.alive = true;
 			node.success(node.value);
 			return;
 		}
 
-		this.last.next = node;
+		this.last!.next = node;
 		this.last = node;
 	};
 
 	dequeue(): void {
 
-		if (this.first == null) {
+		if (this.first === null) {
 			return;
 		}
 		this.first.value.alive = false;
@@ -41,7 +43,7 @@ export class SessionQueue {
 		this.first.next = null;
 
 		this.first = node;
-		if (node == null) {
+		if (node === null) {
 			this.last = null;
 			return;
 		}
@@ -55,8 +57,8 @@ export class SessionQueue {
 		let current = this.first;
 		let previous: QueueItem;
 
-		while (current != null) {
-			this.first.value.alive = false;
+		while (current !== null) {
+			this.first!.value.alive = false;
 			previous = current;
 			current = current.next;
 			previous.next = null;
@@ -70,7 +72,7 @@ export class SessionQueue {
 class QueueItem {
 
 	value: HistorySession;
-	next: QueueItem;
+	next: QueueItem | null;
 	success: Function;
 	reject: Function;
 
