@@ -2,8 +2,8 @@
   "name": "@s2study/draw-history",
   "version": "0.1.10",
   "description": "draw履歴管理",
-  "main": "index.js",
-  "types": "index.d.ts",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "scripts": {
     "compile": "node_modules/.bin/gulp compile",
     "prepublish": "npm run compile"

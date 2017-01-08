@@ -11,7 +11,8 @@ export class LayerMoment implements DrawLayerMoment {
 	private _layer: Layer;
 
 	constructor(
-		canvasId: string, layer: Layer) {
+		canvasId: string, layer: Layer
+	) {
 		this._canvasId = canvasId;
 		this._layer = layer;
 	}
@@ -21,14 +22,14 @@ export class LayerMoment implements DrawLayerMoment {
 	}
 
 	getTransform(): Transform | null {
-		return APIS.DrawUtils.complement(this._layer!.transform, null );
+		return APIS.DrawUtils.complement(this._layer.transform, null );
 	}
 
 	getClip(): Clip | null {
-		return APIS.DrawUtils.complement(this._layer!.clip, null );
+		return APIS.DrawUtils.complement(this._layer.clip, null );
 	}
 
 	getDraws(): ( Draw | undefined) [] {
-		return APIS.DrawUtils.complement< ( Draw | undefined) []>(this._layer!.draws, [] );
+		return APIS.DrawUtils.complement< ( Draw | undefined) []>(this._layer.draws, [] );
 	}
 }

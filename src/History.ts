@@ -33,16 +33,10 @@ export class History implements APIS.history.DrawHistory {
 	getLayers(historyNumber?: number|any, ignoreLocal?: boolean|any): (string|any)[] {
 		return this.prop.getLayers(historyNumber, ignoreLocal);
 	}
-	// getLayers(historyNumber?: number, ignoreLocal: boolean = false): string[] {
-	// 	return this.prop.getLayers(historyNumber, ignoreLocal);
-	// }
 
 	getHistoryNumbers(): (number|any)[] {
 		return this.prop.historyNumbers;
 	}
-	// getHistoryNumbers(): number[] {
-	// 	return this.prop.historyNumbers;
-	// }
 
 	getNowHistoryNumber(): number {
 		return this.prop.historyNumberNow;
@@ -86,29 +80,6 @@ export class History implements APIS.history.DrawHistory {
 		return result;
 	}
 
-	// getMoments(
-	// 	from: number,
-	// 	to: number): DrawMoment[] {
-	// 	let fromIndex = HistoryNumberUtil.getHistoryIndex(this.prop.historyNumbers, from);
-	// 	if (fromIndex < 0) {
-	// 		fromIndex = 0;
-	// 	}
-	// 	if (this.prop.historyNumbers[fromIndex] < from) {
-	// 		fromIndex++;
-	// 	}
-	// 	let toIndex = HistoryNumberUtil.getHistoryIndex(this.prop.historyNumbers, to);
-	// 	if (toIndex < 0) {
-	// 		return [];
-	// 	}
-	// 	let result: DrawMoment[] = [];
-	// 	while (fromIndex <= toIndex) {
-	// 		result.push(this.prop.map.get(this.prop.historyNumbers[fromIndex]));
-	// 		fromIndex = (fromIndex + 1) | 0;
-	// 	}
-	// 	return result;
-	// }
-
-
 	generateMessage(ignoreLocal?: boolean | null): Message {
 		return DrawMessageBuilder.createDrawMessage(
 			this.prop.historyNumbers,
@@ -116,13 +87,7 @@ export class History implements APIS.history.DrawHistory {
 			ignoreLocal ? null : this.prop.localLayers
 		);
 	}
-	// generateMessage(ignoreLocal: boolean = false): Message {
-	// 	return DrawMessageBuilder.createDrawMessage(
-	// 		this.prop.historyNumbers,
-	// 		this.prop.map,
-	// 		ignoreLocal ? null : this.prop.localLayers
-	// 	);
-	// }
+
 	awaitUpdate(callback: (historyNumber: number) => void): void {
 		this.prop.listeners.push(callback);
 	}
@@ -132,10 +97,4 @@ export class History implements APIS.history.DrawHistory {
 			this.queue.enqueue(resolve, reject);
 		});
 	}
-
-	// lock(noWait?: boolean): Promise<DrawHistoryEditSession> {
-	// 	return new Promise((resolve, reject) => {
-	// 		this.queue.enqueue(resolve, reject);
-	// 	});
-	// }
 }

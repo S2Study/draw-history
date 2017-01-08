@@ -7,7 +7,6 @@ import {DrawAPIUtils} from "@s2study/draw-api/lib/DrawAPIUtils";
 
 export class DrawMessageBuilder {
 
-	//test
 	static createDrawMessage(
 		historyNumbers: number[],
 		map: Map<number, DrawMoment>,
@@ -96,7 +95,7 @@ export class DrawMessageBuilder {
 		let keys = moment.getKeys();
 		let key: string;
 		let i = 0 | 0;
-		let layerMoment: DrawLayerMoment;
+		let layerMoment: DrawLayerMoment | null;
 		let layer: Layer | undefined;
 
 		while (i < keys.length) {
@@ -107,27 +106,26 @@ export class DrawMessageBuilder {
 			if (DrawAPIUtils.containsKey(key, localLayers)) {
 				continue;
 			}
-			// if (localLayers != null && localLayers[key] != null) {
-			// 	continue;
-			// }
-
 			layerMoment = moment.getLayerMoment(key);
-			layer = resultTo[layerMoment.getCanvasId()];
-
-			if (layer === undefined) {
-				layer = {draws: []};
-				resultTo[layerMoment.getCanvasId()] = layer;
-			}
-			if (layerMoment.getClip()) {
-				layer.clip = layerMoment.getClip();
-			}
-			if (layerMoment.getTransform()) {
-				layer.transform = layerMoment.getTransform();
-			}
-			if (!layerMoment.getDraws()) {
+			if (DrawAPIUtils.isNull(layerMoment) === true) {
 				continue;
 			}
-			let draws = layerMoment.getDraws();
+			layer = resultTo[layerMoment!.getCanvasId()];
+
+			if ( layer === undefined ) {
+				layer = {draws: []};
+				resultTo[layerMoment!.getCanvasId()] = layer;
+			}
+			if ( DrawAPIUtils.isNull(layerMoment!.getClip()) === false ) {
+				layer.clip = layerMoment!.getClip();
+			}
+			if ( DrawAPIUtils.isNull(layerMoment!.getTransform()) === false ) {
+				layer.transform = layerMoment!.getTransform();
+			}
+			if ( DrawAPIUtils.isNull(layerMoment!.getDraws()) === true ) {
+				continue;
+			}
+			let draws = layerMoment!.getDraws();
 			for (let draw of draws) {
 				layer.draws.push(draw);
 			}

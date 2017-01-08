@@ -149,8 +149,11 @@ export class HistorySession implements DrawHistoryEditSession {
 	 * @param sequences
 	 * @returns {Moment}
 	 */
-	pushHistory(layerMoments?: {[key: string]: DrawLayerMoment},
-				sequences?: string[]): Moment {
+	pushHistory(
+		layerMoments: {[key: string]: DrawLayerMoment},
+		sequences: string[]
+	): Moment {
+
 		this.cleanupHistory();
 		let num = this.prop.numberGenerator.generateNumber();
 		let moment = new Moment(num, layerMoments, sequences);
