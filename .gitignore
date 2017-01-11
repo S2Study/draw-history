@@ -21,6 +21,8 @@ artifact/
 lib/
 /src/**/*.js
 /src/**/*.map
+/test/**/*.js
+/test/**/*.map
 *.class
 *.war
 *.swf

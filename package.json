@@ -39,6 +39,7 @@
     "remap-istanbul": "^0.8.4",
     "sinon": "^1.17.2",
     "source-map-support": "^0.4.2",
+    "ts-node": "^2.0.0",
     "tslint": "^4.2.0",
     "typescript": "^2.0.3"
   },
