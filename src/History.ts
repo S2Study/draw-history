@@ -24,17 +24,18 @@ export class History implements APIS.history.DrawHistory {
 		numberGenerator?: NumberGenerator,
 		layerNumberGenerator?: KeyGenerator
 	) {
-		this.prop = new HistoryProperty();
-		this.prop.numberGenerator = numberGenerator ? numberGenerator : new HistoryNumberGenerator();
-		this.prop.layerNumberGenerator = layerNumberGenerator ? layerNumberGenerator : new LayerNumberGenerator();
+		this.prop = new HistoryProperty(
+			numberGenerator ? numberGenerator : new HistoryNumberGenerator(),
+			layerNumberGenerator ? layerNumberGenerator : new LayerNumberGenerator()
+		);
 		this.queue = new SessionQueue(this.prop);
 	}
 
-	getLayers(historyNumber?: number|any, ignoreLocal?: boolean|any): (string|any)[] {
-		return this.prop.getLayers(historyNumber, ignoreLocal);
+	getLayers(historyNumber?: number|null, ignoreLocal?: boolean|null): (string|undefined)[] {
+		return this.prop.getLayers(historyNumber, ignoreLocal === true);
 	}
 
-	getHistoryNumbers(): (number|any)[] {
+	getHistoryNumbers(): (number|undefined)[] {
 		return this.prop.historyNumbers;
 	}
 
@@ -43,17 +44,17 @@ export class History implements APIS.history.DrawHistory {
 	}
 
 	getLastHistoryNumber(): number {
-		if (!this.prop.historyNumbers || this.prop.historyNumbers.length === 0) {
+		const numbers = this.prop.historyNumbers;
+		const len = numbers.length;
+		if (len === 0) {
 			return -1;
 		}
-		return this.prop.historyNumbers[this.prop.historyNumbers.length - 1];
+		const result = numbers[len - 1];
+		return APIS.DrawUtils.complementNumber(result, -1);
 	}
 
 	getFirstHistoryNumber(): number {
-		if (!this.prop.historyNumbers || this.prop.historyNumbers.length === 0) {
-			return -1;
-		}
-		return this.prop.historyNumbers[0];
+		return APIS.DrawUtils.complementNumber(this.prop.historyNumbers[0], -1);
 	}
 
 	isAvailable(historyNumber?: number | null): boolean {
@@ -61,20 +62,22 @@ export class History implements APIS.history.DrawHistory {
 	}
 
 	getMoments(from: number, to: number, ignoreLocal?: boolean): ( DrawMoment| undefined )[] {
-		let fromIndex: number = HistoryNumberUtil.getHistoryIndex(this.prop.historyNumbers, from);
+		const numbers = this.prop.historyNumbers;
+		let fromIndex: number = HistoryNumberUtil.getHistoryIndex(numbers, from);
 		if (fromIndex < 0) {
 			fromIndex = 0;
 		}
-		if (this.prop.historyNumbers[fromIndex] < from) {
+		if (numbers[fromIndex] < from) {
 			fromIndex++;
 		}
-		let toIndex = HistoryNumberUtil.getHistoryIndex(this.prop.historyNumbers, to);
+		let toIndex = HistoryNumberUtil.getHistoryIndex(numbers, to);
 		if (toIndex < 0) {
 			return [];
 		}
 		let result: ( DrawMoment | undefined )[] = [];
 		while (fromIndex <= toIndex) {
-			result.push(this.prop.map.get(this.prop.historyNumbers[fromIndex]));
+			let historyNumber = this.prop.historyNumbers[fromIndex];
+			result.push(historyNumber === undefined ? undefined : this.prop.map.get(historyNumber));
 			fromIndex = (fromIndex + 1) | 0;
 		}
 		return result;

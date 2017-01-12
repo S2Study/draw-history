@@ -8,7 +8,7 @@ import {DrawAPIUtils} from "@s2study/draw-api/lib/DrawAPIUtils";
 export class DrawMessageBuilder {
 
 	static createDrawMessage(
-		historyNumbers: number[],
+		historyNumbers: ( number | undefined )[],
 		map: Map<number, DrawMoment>,
 		localLayers?: {[key: string]: string | undefined } | null
 	): Message {
@@ -18,7 +18,7 @@ export class DrawMessageBuilder {
 
 		for (let historyNumber of historyNumbers) {
 
-			let moment = map.get(historyNumber);
+			let moment = map.get(DrawAPIUtils.complement<number>(historyNumber, -1));
 			if (DrawAPIUtils.isNull(moment) ) {
 				continue;
 			}

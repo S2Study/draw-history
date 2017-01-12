@@ -8,7 +8,7 @@ export class HistoryNumberUtil {
 	 * @returns {number}
 	 */
 	static getHistoryIndex(
-		historyNumbers: number[],
+		historyNumbers: ( number | undefined)[],
 		historyNumber: number): number {
 
 		if (historyNumber < 0) {

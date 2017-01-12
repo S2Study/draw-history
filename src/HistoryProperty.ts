@@ -15,31 +15,31 @@ export class HistoryProperty {
 	 * 現在の履歴番号
 	 * @type {number}
 	 */
-	historyNumberNow: number = -1;
+	historyNumberNow: number;
 
 	/**
 	 * 履歴番号のリスト
 	 * @type {Array}
 	 */
-	historyNumbers: number[] = [];
+	historyNumbers: ( number | undefined)[];
 
 	/**
 	 * レイヤー増減、順序移動を伴う履歴番号のリスト
 	 * @type {Array}
 	 */
-	sequencesHistoryNumbers: number[] = [];
+	sequencesHistoryNumbers: ( number | undefined) [];
 
 	/**
 	 * 履歴番号とDrawMomentとのマッピング
 	 * @type {{}}
 	 */
-	map: Map<number, DrawMoment> = new Map();
+	map: Map<number, DrawMoment> ;
 
 	/**
 	 * 変更通知を受け取るリスナー
 	 * @type {Array}
 	 */
-	listeners: any[] = [];
+	listeners: any[];
 
 	/**
 	 * 履歴番号採番
@@ -54,10 +54,24 @@ export class HistoryProperty {
 	/**
 	 * ローカルレイヤーのマップ
 	 */
-	localLayers: {[key: string]: string} = {};
+	localLayers: {[key: string]: string};
+
+	constructor(
+		numberGenerator: NumberGenerator,
+		layerNumberGenerator: KeyGenerator
+	) {
+		this.historyNumberNow = -1;
+		this.historyNumbers = [];
+		this.sequencesHistoryNumbers = [];
+		this.map = new Map();
+		this.listeners = [];
+		this.numberGenerator = numberGenerator;
+		this.layerNumberGenerator = layerNumberGenerator;
+		this.localLayers = {};
+	}
 
 	getLayers(
-		historyNumber?: number,
+		historyNumber?: number | null,
 		ignoreLocal: boolean = false): ( string | undefined ) [] {
 
 		let historyNum = historyNumber;
@@ -71,11 +85,15 @@ export class HistoryProperty {
 		if (i < 0) {
 			return [];
 		}
-		let moment = this.map.get(this.sequencesHistoryNumbers[i]);
+		let sequenceNumber = this.sequencesHistoryNumbers[i];
+		if (sequenceNumber === undefined) {
+			return [];
+		}
+		let moment = this.map.get(sequenceNumber);
 		if (!moment) {
 			return [];
 		}
-		if (!ignoreLocal) {
+		if (ignoreLocal === false) {
 			return moment.getSequence().concat();
 		}
 
@@ -86,8 +104,8 @@ export class HistoryProperty {
 			return result;
 		}
 		i = 0 | 0;
-
-		while (i < moments.length) {
+		const len = moments.length | 0;
+		while (i < len) {
 			let key = moments[i];
 			if (APIS.DrawUtils.containsKey(key, this.localLayers) === false) {
 				result.push(key!);
