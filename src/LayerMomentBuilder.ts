@@ -83,11 +83,9 @@ export class LayerMomentBuilder implements DrawLyaerMomentBuilder {
 
 		this.momentBuilder.layerMap[this.layerId] = new LayerMoment(
 			this.layerId,
-			{
-				transform: this.transform,
-				clip: this.clip,
-				draws: this.draws
-			}
+			this.draws,
+			this.transform,
+			this.clip
 		);
 		return this.momentBuilder;
 	}

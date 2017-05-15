@@ -8,7 +8,7 @@ export class HistoryNumberUtil {
 	 * @returns {number}
 	 */
 	static getHistoryIndex(
-		historyNumbers: ( number | undefined)[],
+		historyNumbers: number[],
 		historyNumber: number): number {
 
 		if (historyNumber < 0) {
@@ -18,7 +18,7 @@ export class HistoryNumberUtil {
 		// ２分木探索で特定
 		let min = 0 | 0;
 		let max = (historyNumbers.length - 1) | 0;
-		if (historyNumbers[max] <= historyNumber) {
+		if ((<number>historyNumbers[max]!) <= historyNumber) {
 			return max;
 		}
 		if (historyNumbers[0] === historyNumber) {
@@ -34,12 +34,12 @@ export class HistoryNumberUtil {
 			if (diff === 0) {
 				break;
 			}
-			let number1 = historyNumbers[index];
+			let number1 = historyNumbers[index]!;
 			if (number1 === historyNumber) {
 				return index;
 			}
 			if (diff === 1) {
-				index = historyNumbers[max] > historyNumber ? min : max;
+				index = historyNumbers[max]! > historyNumber ? min : max;
 				break;
 			}
 			if (number1 > historyNumber) {
@@ -52,7 +52,7 @@ export class HistoryNumberUtil {
 		if (index < 0) {
 			return index;
 		}
-		if (historyNumbers[index] > historyNumber) {
+		if (historyNumbers[index]! > historyNumber) {
 			return index - 1;
 		}
 		return index;

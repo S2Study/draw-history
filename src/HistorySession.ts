@@ -50,28 +50,6 @@ export class HistorySession implements DrawHistoryEditSession {
 		return this.prop.historyNumberNow;
 	}
 
-	// setHistoryNumberNow(
-	// 	historyNumber: number,
-	// 	clearFuture: boolean = false
-	// ): number {
-	// 	if (!this.alive) {
-	// 		this.noticeSessionError();
-	// 		return;
-	// 	}
-	// 	let index = HistoryNumberUtil.getHistoryIndex(
-	// 		this.prop.historyNumbers, historyNumber
-	// 	);
-	// 	if (index < 0) {
-	// 		return index;
-	// 	}
-	// 	this.prop.historyNumberNow = this.prop.historyNumbers[index];
-	// 	if (clearFuture) {
-	// 		this.cleanupHistory();
-	// 	}
-	// 	this.noticeUpdate();
-	// 	return this.prop.historyNumberNow;
-	// }
-
 	clear(): void {
 		if (!this.alive) {
 			this.noticeSessionError();
@@ -131,7 +109,7 @@ export class HistorySession implements DrawHistoryEditSession {
 		let layers = this.prop.getLayers(this.prop.historyNumberNow);
 		let result: string[] = [];
 		for (let id of layers) {
-			if (layerId === id || id === undefined) {
+			if (layerId === id) {
 				continue;
 			}
 			result.push(id);
@@ -154,7 +132,7 @@ export class HistorySession implements DrawHistoryEditSession {
 	 * @returns {Moment}
 	 */
 	pushHistory(
-		layerMoments: {[key: string]: ( DrawLayerMoment | undefined )},
+		layerMoments: {[key: string]: DrawLayerMoment },
 		sequences: string[]
 	): Moment {
 

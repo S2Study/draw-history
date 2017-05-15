@@ -7,15 +7,15 @@ export class Moment implements DrawMoment {
 
 	private historyNumber: number;
 	private sequences: string[];
-	private layerMoments: {[key: string]: ( DrawLayerMoment | undefined )};
+	private layerMoments: {[key: string]: DrawLayerMoment };
 
 	constructor(
 		historyNumber: number,
-		layerMoments?: {[key: string]: ( DrawLayerMoment | undefined ) },
-		sequences?: string[]) {
+		layerMoments: {[key: string]: DrawLayerMoment },
+		sequences: string[]) {
 		this.historyNumber = historyNumber;
-		this.layerMoments = APIS.DrawUtils.complement(layerMoments, {});
-		this.sequences = APIS.DrawUtils.isNull(sequences) === false ? sequences! : [];
+		this.layerMoments = layerMoments;
+		this.sequences = sequences;
 	}
 
 	getHistoryNumber(): number {
@@ -23,7 +23,7 @@ export class Moment implements DrawMoment {
 	}
 
 	getKeys(): string[] {
-		return this.layerMoments ? Object.keys(this.layerMoments) : [];
+		return Object.keys(this.layerMoments);
 	}
 
 	getLayerMoment(key: string): DrawLayerMoment | null {

@@ -4,6 +4,10 @@ import Message = APIS.structures.Message;
 import Layer = APIS.structures.Layer;
 import DrawLayerMoment = APIS.history.DrawLayerMoment;
 import {DrawAPIUtils} from "@s2study/draw-api/lib/DrawAPIUtils";
+import {LayerFactory} from "@s2study/draw-api/lib/structures/Layer";
+import {structures} from "@s2study/draw-api/index";
+import Draw = structures.Draw;
+import {MessageFactory} from "@s2study/draw-api/lib/structures/Message";
 
 export class DrawMessageBuilder {
 
@@ -13,7 +17,7 @@ export class DrawMessageBuilder {
 		localLayers?: {[key: string]: string | undefined } | null
 	): Message {
 
-		let resultTo: {[key: string]: Layer | undefined } = {};
+		let resultTo: {[key: string]: Layer } = {};
 		let sequences: ( string | undefined )[] | null = null;
 
 		for (let historyNumber of historyNumbers) {
@@ -36,10 +40,12 @@ export class DrawMessageBuilder {
 
 		let layers: Layer[] = [];
 		if (sequences === null) {
-			return {
-				time: new Date().getTime(),
-				canvas: layers
-			};
+			return MessageFactory.createInstance(
+				layers,
+				null,
+				null,
+				Date.now()
+			);
 		}
 
 		sequences = DrawMessageBuilder.removeLocalLayer(
@@ -48,15 +54,16 @@ export class DrawMessageBuilder {
 
 		for (let sequence of sequences) {
 			layers.push(
-				DrawAPIUtils.containsKey(sequence, resultTo) === true ? resultTo[sequence!]! : { draws: []}
+				DrawAPIUtils.containsKey(sequence, resultTo) === true ? resultTo[sequence!]! : LayerFactory.createInstance()
 			);
 			// layers.push(resultTo[sequence]!);
 		}
-
-		return {
-			time: new Date().getTime(),
-			canvas: layers
-		};
+		return MessageFactory.createInstance(
+			layers,
+			null,
+			null,
+			Date.now()
+		);
 	}
 
 	static removeLocalLayer(
@@ -86,8 +93,8 @@ export class DrawMessageBuilder {
 	 * @param moment
 	 * @param localLayers
 	 */
-	static parseMoment(
-		resultTo: {[key: string]: Layer | undefined },
+	private static parseMoment(
+		resultTo: {[key: string]: Layer },
 		moment: DrawMoment,
 		localLayers?: {[key: string]: string | undefined } | null
 	): void {
@@ -97,6 +104,7 @@ export class DrawMessageBuilder {
 		let i = 0 | 0;
 		let layerMoment: DrawLayerMoment | null;
 		let layer: Layer | undefined;
+		// const draws: Draw[] = [];
 
 		while (i < keys.length) {
 
@@ -110,25 +118,22 @@ export class DrawMessageBuilder {
 			if (DrawAPIUtils.isNull(layerMoment) === true) {
 				continue;
 			}
-			layer = resultTo[layerMoment!.getCanvasId()];
+			layer = resultTo[key];
 
-			if ( layer === undefined ) {
-				layer = {draws: []};
-				resultTo[layerMoment!.getCanvasId()] = layer;
-			}
-			if ( DrawAPIUtils.isNull(layerMoment!.getClip()) === false ) {
-				layer.clip = layerMoment!.getClip();
-			}
-			if ( DrawAPIUtils.isNull(layerMoment!.getTransform()) === false ) {
-				layer.transform = layerMoment!.getTransform();
-			}
-			if ( DrawAPIUtils.isNull(layerMoment!.getDraws()) === true ) {
+			if (DrawAPIUtils.isNull(layer)) {
+				resultTo[key] = LayerFactory.createInstance(
+					layerMoment!.getDraws().concat(),
+					layerMoment!.getTransform(),
+					layerMoment!.getClip()
+				);
 				continue;
 			}
-			let draws = layerMoment!.getDraws();
-			for (let draw of draws) {
-				layer.draws.push(draw);
-			}
+
+			resultTo[key] = LayerFactory.createInstance(
+				Array.prototype.push.apply(layer.draws, layerMoment!.getDraws()),
+				DrawAPIUtils.complement(layerMoment!.getTransform(), layer.transform),
+				DrawAPIUtils.complement(layerMoment!.getClip(), layer.clip)
+			);
 		}
 	}
 }

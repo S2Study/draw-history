@@ -2,6 +2,8 @@ import * as APIS from "@s2study/draw-api";
 import * as assert from "power-assert";
 import DrawHistoryEditSession = APIS.history.DrawHistoryEditSession;
 import {History} from "../src/History";
+import {GraphicsDrawFactory} from "@s2study/draw-api/lib/structures/GraphicsDraw";
+import {TransformFactory} from "@s2study/draw-api/lib/structures/Transform";
 
 function createSession(): Promise<DrawHistoryEditSession> {
 	const history = new History();
@@ -24,7 +26,9 @@ describe("DrawMomentBuilderのテスト", () => {
 
 			it("layerMomentが反映されること。", () => {
 				let builder: APIS.history.DrawMomentBuilder = session!.addMoment();
-				let moment = builder.putLayerMoment("test2").setTransForm({b: 2}).commit().commit();
+				let moment = builder.putLayerMoment("test2").setTransForm(
+					TransformFactory.createInstance(0, 0, 1, 2)
+				).commit().commit();
 				assert(moment.getLayerMoment("test2")!.getTransform()!.b === 2);
 			});
 
@@ -36,8 +40,12 @@ describe("DrawMomentBuilderのテスト", () => {
 
 				let builder: APIS.history.DrawMomentBuilder = session!.addMoment();
 				let moment = builder
-						.putLayerMoment("test3").setTransForm({b: 2}).commit()
-						.putLayerMoment("test4").setTransForm({c: 3}).commit()
+						.putLayerMoment("test3").setTransForm(
+							TransformFactory.createInstance(0, 0, 1, 2)
+						).commit()
+						.putLayerMoment("test4").setTransForm(
+							TransformFactory.createInstance(0, 0, 1, 0, 3)
+						).commit()
 					.commit();
 
 				assert(moment.getLayerMoment("test3")!.getTransform()!.b === 2);
@@ -53,8 +61,12 @@ describe("DrawMomentBuilderのテスト", () => {
 			it("layerMomentが反映されること。", () => {
 
 				let builder: APIS.history.DrawMomentBuilder = session!.addMoment();
-				let layer1 = builder.putLayerMoment("test1").setTransForm({b: 2});
-				let layer2 = builder.putLayerMoment("test2").setTransForm({c: 3});
+				let layer1 = builder.putLayerMoment("test1").setTransForm(
+					TransformFactory.createInstance(0, 0, 1, 2)
+				);
+				let layer2 = builder.putLayerMoment("test2").setTransForm(
+					TransformFactory.createInstance(0, 0, 1, 0, 3)
+				);
 
 				layer2.commit();
 				let moment = layer1.commit().commit();
@@ -72,8 +84,12 @@ describe("DrawMomentBuilderのテスト", () => {
 
 				let builder: APIS.history.DrawMomentBuilder = session!.addMoment();
 
-				let layer1 = builder.putLayerMoment("test1").setTransForm({b: 2});
-				builder.putLayerMoment("test2").setTransForm({c: 3});
+				let layer1 = builder.putLayerMoment("test1").setTransForm(
+					TransformFactory.createInstance(0, 0, 1, 2)
+				);
+				builder.putLayerMoment("test2").setTransForm(
+					TransformFactory.createInstance(0, 0, 1, 0, 3)
+				);
 
 				// layer2.commit();
 				let moment = layer1.commit().commit();
@@ -92,8 +108,12 @@ describe("DrawMomentBuilderのテスト", () => {
 		it("sequenceが反映されること。", () => {
 			let builder: APIS.history.DrawMomentBuilder = session!.addMoment();
 
-			builder.putLayerMoment("test1").setTransForm({b: 2}).commit();
-			builder.putLayerMoment("test2").setTransForm({c: 3}).commit();
+			builder.putLayerMoment("test1").setTransForm(
+				TransformFactory.createInstance(0, 0, 1, 2)
+			).commit();
+			builder.putLayerMoment("test2").setTransForm(
+				TransformFactory.createInstance(0, 0, 1, 3)
+			).commit();
 
 			builder.setSequence(["test2", "test1"]);
 			let moment = builder.commit();
@@ -114,9 +134,9 @@ describe("DrawMomentBuilderのテスト", () => {
 		});
 
 		it("momentが追加されること。", () => {
-			let moment = builder!.putLayerMoment("test").addDraw({
-				compositeOperation: 6
-			}).commit().commit();
+			let moment = builder!.putLayerMoment("test").addDraw(
+				GraphicsDrawFactory.createInstance(null, null, 6)
+			).commit().commit();
 			assert(moment.getLayerMoment("test")!.getDraws()[0]!.compositeOperation === 6);
 		});
 

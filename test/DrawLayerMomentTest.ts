@@ -2,6 +2,10 @@ import * as APIS from "@s2study/draw-api";
 import * as assert from "power-assert";
 import DrawMomentBuilder = APIS.history.DrawMomentBuilder;
 import {History} from "../src/History";
+import {TransformFactory} from "@s2study/draw-api/lib/structures/Transform";
+import {ClipFactory} from "@s2study/draw-api/lib/structures/Clip";
+import {MoveToFactory} from "@s2study/draw-api/lib/structures/MoveTo";
+import {GraphicsDrawFactory} from "@s2study/draw-api/lib/structures/GraphicsDraw";
 
 function createMomentBuilder(): Promise<DrawMomentBuilder> {
 	const history = new History();
@@ -22,15 +26,19 @@ describe("Historyのテスト", () => {
 
 	describe("setTransForm", () => {
 		it("transFormが反映されること。", () => {
-			let moment = momentBuilder!.putLayerMoment("test").setTransForm({a: 1}).commit().commit();
-			assert(moment.getLayerMoment("test")!.getTransform()!.a === 1);
+			let moment = momentBuilder!.putLayerMoment("test").setTransForm(
+				TransformFactory.createInstance(0, 0, 4)
+			).commit().commit();
+			assert(moment.getLayerMoment("test")!.getTransform()!.a === 4);
 		});
 	});
 
 	describe("setClip", () => {
 		it("clipが反映されること。", () => {
-			let moment = momentBuilder!.putLayerMoment("test").setClip({
-				path: [<APIS.structures.MoveTo>{type: 0, x: 1, y: 2}]}
+			let moment = momentBuilder!.putLayerMoment("test").setClip(
+				ClipFactory.createInstance([
+					MoveToFactory.createInstance(1, 2)
+				])
 			).commit().commit();
 			assert((<any>moment.getLayerMoment("test")!.getClip()!.path[0]).y === 2);
 		});
@@ -38,20 +46,19 @@ describe("Historyのテスト", () => {
 
 	describe("addDraw", () => {
 		it("drawが追加されること。", () => {
-			let moment = momentBuilder!.putLayerMoment("test").addDraw({
-				compositeOperation: 6
-			}).commit().commit();
+			let moment = momentBuilder!.putLayerMoment("test").addDraw(
+				GraphicsDrawFactory.createInstance([], null, 6)
+			).commit().commit();
 			assert(moment.getLayerMoment("test")!.getDraws()[0]!.compositeOperation === 6);
 		});
 	});
 
 	describe("addDraws", () => {
 		it("drawsが全て追加されること。", () => {
-			let moment = momentBuilder!.putLayerMoment("test").addDraws([{
-				compositeOperation: 6
-			}, {
-				compositeOperation: 2
-			}]).commit().commit();
+			let moment = momentBuilder!.putLayerMoment("test").addDraws([
+				GraphicsDrawFactory.createInstance([], null, 6),
+				GraphicsDrawFactory.createInstance([], null, 2)
+			]).commit().commit();
 			assert(moment.getLayerMoment("test")!.getDraws()!.length === 2);
 			assert(moment.getLayerMoment("test")!.getDraws()[0]!.compositeOperation === 6);
 			assert(moment.getLayerMoment("test")!.getDraws()[1]!.compositeOperation === 2);

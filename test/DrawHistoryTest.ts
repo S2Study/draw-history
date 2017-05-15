@@ -1,10 +1,22 @@
-describe("DrawLayerMomentBuilderのテスト", () => {
+import * as APIS from "@s2study/draw-api";
+import * as assert from "power-assert";
+import {History} from "../src/History";
+describe("Historyのテスト", () => {
 
 	describe("getLayers", () => {
+
 		describe("履歴が空", () => {
+			it("空の配列が返されること", () => {
+				assert(new History().getLayers().length === 0);
+			});
 		});
-		describe("sequence指定の履歴が無し", () => {
-		});
+
+		// describe("sequence指定の履歴が無し", () => {
+		// 	it("空の配列が返されること", () => {
+		// 		assert(new History().getLayers().length === 0);
+		// 	});
+		// });
+
 		describe("ignoreLocal指定あり", () => {
 			describe("historyNumber指定あり", () => {
 				describe("全てlocal履歴", () => {
@@ -70,3 +82,4 @@ describe("DrawLayerMomentBuilderのテスト", () => {
 	});
 
 });
+

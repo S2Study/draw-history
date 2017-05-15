@@ -5,6 +5,7 @@ import NumberGenerator = APIS.history.NumberGenerator;
 import KeyGenerator = APIS.history.KeyGenerator;
 
 import {HistoryNumberUtil} from "./HistoryNumberUtil";
+import {DrawAPIUtils} from "@s2study/draw-api/lib/DrawAPIUtils";
 
 /**
  * HistoryとHistorySessionで共有するプロパティ
@@ -21,13 +22,13 @@ export class HistoryProperty {
 	 * 履歴番号のリスト
 	 * @type {Array}
 	 */
-	historyNumbers: ( number | undefined)[];
+	historyNumbers: number[];
 
 	/**
 	 * レイヤー増減、順序移動を伴う履歴番号のリスト
 	 * @type {Array}
 	 */
-	sequencesHistoryNumbers: ( number | undefined) [];
+	sequencesHistoryNumbers: number[];
 
 	/**
 	 * 履歴番号とDrawMomentとのマッピング
@@ -71,36 +72,37 @@ export class HistoryProperty {
 	}
 
 	getLayers(
-		historyNumber?: number | null,
-		ignoreLocal: boolean = false): ( string | undefined ) [] {
+		historyNumber: number,
+		ignoreLocal: boolean = false
+	): string[] {
 
 		let historyNum = historyNumber;
-		if (historyNum !== 0 && (!historyNum || historyNum < 0 )) {
+		if (historyNum < 0 ) {
 			historyNum = this.historyNumberNow;
 		}
 		let i = (this.sequencesHistoryNumbers.length - 1) | 0;
 		if (historyNum) {
 			i = HistoryNumberUtil.getHistoryIndex(this.sequencesHistoryNumbers, historyNum);
 		}
-		if (i < 0) {
-			return [];
-		}
+		// if (i < 0) {
+		// 	return [];
+		// }
 		let sequenceNumber = this.sequencesHistoryNumbers[i];
-		if (sequenceNumber === undefined) {
+		if (DrawAPIUtils.isNull(sequenceNumber)) {
 			return [];
 		}
 		let moment = this.map.get(sequenceNumber);
-		if (!moment) {
+		if (DrawAPIUtils.isNull(moment)) {
 			return [];
 		}
 		if (ignoreLocal === false) {
-			return moment.getSequence().concat();
+			return moment!.getSequence().concat();
 		}
 
-		let moments = moment.getSequence();
+		let moments = moment!.getSequence();
 		let result: string[] = [];
 
-		if (APIS.DrawUtils.isNull(moments) === true) {
+		if (APIS.DrawUtils.isNull(moments)) {
 			return result;
 		}
 		i = 0 | 0;
