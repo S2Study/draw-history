@@ -95,20 +95,24 @@ export class HistoryProperty {
 		if (DrawAPIUtils.isNull(moment)) {
 			return [];
 		}
+		let sequences = moment!.getSequence();
+		if (sequences === null) {
+			return [];
+		}
 		if (ignoreLocal === false) {
-			return moment!.getSequence().concat();
+			return sequences.concat();
 		}
 
-		let moments = moment!.getSequence();
+		// let moments = moment!.getSequence();
 		let result: string[] = [];
 
-		if (APIS.DrawUtils.isNull(moments)) {
+		if (APIS.DrawUtils.isNull(sequences)) {
 			return result;
 		}
 		i = 0 | 0;
-		const len = moments.length | 0;
+		const len = sequences.length | 0;
 		while (i < len) {
-			let key = moments[i];
+			let key = sequences[i];
 			if (APIS.DrawUtils.containsKey(key, this.localLayers) === false) {
 				result.push(key!);
 			}

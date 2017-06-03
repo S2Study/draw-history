@@ -6,13 +6,14 @@ import DrawLayerMoment = APIS.history.DrawLayerMoment;
 export class Moment implements DrawMoment {
 
 	private historyNumber: number;
-	private sequences: string[];
+	private sequences: string[] | null;
 	private layerMoments: {[key: string]: DrawLayerMoment };
 
 	constructor(
 		historyNumber: number,
 		layerMoments: {[key: string]: DrawLayerMoment },
-		sequences: string[]) {
+		sequences: string[] | null
+	) {
 		this.historyNumber = historyNumber;
 		this.layerMoments = layerMoments;
 		this.sequences = sequences;
@@ -30,7 +31,7 @@ export class Moment implements DrawMoment {
 		return APIS.DrawUtils.complement<DrawLayerMoment | null>(this.layerMoments[key], null);
 	}
 
-	getSequence(): string[] {
+	getSequence(): string[] | null {
 		return this.sequences;
 	}
 }

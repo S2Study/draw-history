@@ -1,6 +1,6 @@
 {
   "name": "@s2study/draw-history",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0-beta.4",
   "description": "draw履歴管理",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -29,23 +29,23 @@
     "gulp-istanbul": "^1.1.1",
     "gulp-mocha": "^4.0.1",
     "gulp-sourcemaps": "^2.4.1",
-    "gulp-tslint": "^7.1.0",
+    "gulp-tslint": "^8.1.0",
     "gulp-typescript": "^3.1.5",
-    "install": "^0.8.7",
+    "install": "^0.10.1",
     "istanbul": "^0.4.5",
     "merge2": "^1.0.3",
     "mocha": "^3.2.0",
     "power-assert": "^1.4.2",
     "process": "^0.11.2",
     "remap-istanbul": "^0.9.1",
-    "sinon": "^1.17.2",
+    "sinon": "^2.3.2",
     "source-map-support": "^0.4.2",
-    "ts-node": "^2.1.0",
-    "tslint": "^4.5.1",
+    "ts-node": "^3.0.4",
+    "tslint": "^5.3.2",
     "typescript": "^2.2.1"
   },
   "dependencies": {
-    "@s2study/draw-api": "^1.0.0-beta.2",
+    "@s2study/draw-api": "^1.0.0-beta.7",
     "babel-runtime": "^6.23.0"
   }
 }

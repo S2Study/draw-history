@@ -133,7 +133,7 @@ export class HistorySession implements DrawHistoryEditSession {
 	 */
 	pushHistory(
 		layerMoments: {[key: string]: DrawLayerMoment },
-		sequences: string[]
+		sequences: string[] | null
 	): Moment {
 
 		this.cleanupHistory();

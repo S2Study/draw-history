@@ -10,14 +10,14 @@ import {HistorySession} from "./HistorySession";
 export class MomentBuilder implements DrawMomentBuilder {
 
 	layerMap: {[key: string]: LayerMoment};
-	sequences: string[];
+	sequences: string[] | null;
 	private session: HistorySession;
 	private committed: boolean;
 
 	constructor(session: HistorySession) {
 		this.session = session;
 		this.layerMap = {};
-		this.sequences = [];
+		this.sequences = null;
 		this.committed = false;
 	}
 
