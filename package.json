@@ -1,6 +1,6 @@
 {
   "name": "@s2study/draw-history",
-  "version": "1.0.0-beta.4",
+  "version": "1.0.0-beta.6",
   "description": "draw履歴管理",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",

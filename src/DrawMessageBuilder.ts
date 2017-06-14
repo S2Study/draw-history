@@ -129,8 +129,9 @@ export class DrawMessageBuilder {
 				continue;
 			}
 
+			Array.prototype.push.apply(layer.draws, layerMoment!.getDraws()),
 			resultTo[key] = LayerFactory.createInstance(
-				Array.prototype.push.apply(layer.draws, layerMoment!.getDraws()),
+				layer.draws,
 				DrawAPIUtils.complement(layerMoment!.getTransform(), layer.transform),
 				DrawAPIUtils.complement(layerMoment!.getClip(), layer.clip)
 			);
